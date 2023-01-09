@@ -1,3 +1,31 @@
+### Binomial pricing model
+Turn this into a class/function
+```python
+N = 15000              # number of periods or number of time steps  
+payoff = "call"        # payoff 
+
+dT = float(T) / N                             # Delta t
+u = np.exp(sig * np.sqrt(dT))                 # up factor
+d = 1.0 / u                                   # down factor 
+
+V = np.zeros(N+1)                             # initialize the price vector
+S_T = np.array( [(S0 * u**j * d**(N - j)) for j in range(N + 1)] )  # price S_T at time T
+
+a = np.exp(r * dT)    # risk free compounded return
+p = (a - d)/ (u - d)  # risk neutral up probability
+q = 1.0 - p           # risk neutral down probability   
+
+if payoff =="call":
+    V[:] = np.maximum(S_T-K, 0.0)
+else:
+    V[:] = np.maximum(K-S_T, 0.0)
+
+for i in range(N-1, -1, -1):
+    V[:-1] = np.exp(-r*dT) * (p * V[1:] + q * V[:-1])    # the price vector is overwritten at each step
+        
+print("BS Tree Price: ", V[0])
+```
+
 ### [Black–Scholes model](https://github.com/Johanlai/f_functions/blob/main/Explanations.md#blackscholes-model)
 Vanilla call option - should add put functionality
 ```python

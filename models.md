@@ -2,7 +2,7 @@
 Vanilla call option
 ```python
 class BSM:
-    def __init__(self, S, k, r, stdev, T):
+    def __init__(self, S, k, stdev, T, r=None):
         """
         S = current stock price
         K = option strike price
@@ -12,9 +12,12 @@ class BSM:
         """
         self.S = S
         self.k = k
-        self.r = r
         self.stdev = stdev
         self.T = T
+        if r==None:
+            self.r = float(pdr.get_data_fred('GS10').iloc[-1])
+        else:
+            self.r = r
     def d1(self):
         return (np.log(self.S/self.k)+(self.r+self.stdev**2/2)*self.T)/(self.stdev*np.sqrt(self.T))
 

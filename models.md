@@ -2,6 +2,7 @@
 Vanilla call option - should add put functionality
 ```python
 import numpy as np
+from scipy.stats import norm
 # If pulling current treasury rates data
 import pandas_datareader as pdr
 ```

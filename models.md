@@ -1,5 +1,5 @@
 ### [Black–Scholes model](https://github.com/Johanlai/f_functions/blob/main/Explanations.md#blackscholes-model)
-Vanilla call option - should add functionality
+Vanilla call option - should add put functionality
 ```python
 class BSM:
     def __init__(self, S, k, stdev, T, r=None):

@@ -1,6 +1,11 @@
 ### [Black–Scholes model](https://github.com/Johanlai/f_functions/blob/main/Explanations.md#blackscholes-model)
 Vanilla call option - should add put functionality
 ```python
+import numpy as np
+# If pulling current treasury rates data
+import pandas_datareader as pdr
+```
+```python
 class BSM:
     def __init__(self, S, k, stdev, T, r=None):
         """

@@ -1,4 +1,4 @@
-### Black–Scholes model
+### [Black–Scholes model](https://github.com/Johanlai/f_functions/blob/main/Explanations.md#blackscholes-model)
 Vanilla call option
 ```python
 class BSM:

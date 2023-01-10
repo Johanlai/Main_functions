@@ -1,3 +1,13 @@
+# Contructing a portfolio
+```python
+class Asset:
+    def __init__(self, tickers, start_date='2007-1-1', end_date=date.today()):
+        self.raw = pdr.data.get_data_yahoo(tickers, start=start_date,end=end_date)
+        self.close = self.raw['Adj Close']
+        self.S = self.close[-1]
+        self.stdev = self.close.std()*250**0.5
+```
+## Models
 ### Binomial pricing model
 Turn this into a class/function
 ```python

@@ -1,6 +1,6 @@
 # Contructing a portfolio
 ```python
-class Asset:
+class Portfolio:
     def __init__(self, tickers, start_date='2007-1-1', end_date=date.today()):
         self.raw = pdr.data.get_data_yahoo(tickers, start=start_date,end=end_date)
         self.close = self.raw['Adj Close']

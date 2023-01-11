@@ -1,4 +1,5 @@
 # Contructing a portfolio
+`attempt 1`
 ```python
 import yfinance as yf
 yf.pdr_override()
@@ -12,6 +13,42 @@ class Portfolio:
         self.close = self.raw['Adj Close']
         self.S = self.close[-1]
         self.stdev = self.close.std()*250**0.5
+```
+`attempt 2`<br>
+In this version, defaults were added to generate a quick test case.<br> A dictionary was added to access each block of data at column index level 0, but this was unnecessary as the same subsets can be simply obtained by calling the column indexes. Cool tangent, checkpointing it.
+```python
+class Portfolio:
+    def __init__(self, tickers=None, start=None, end=None):
+        """
+        Generate a portfolio from a list of tickers.
+        -------------------
+        Defaults:
+        Ticker: ^FTSE
+        Start: 10 weeks from current date
+        End: Current date
+        -------------------
+        Uses yahoo_finance
+        """
+# Setting default values to generate quick test instances
+    # Use FTSE index if no ticker is provided
+        if tickers==None:
+            tickers = '^FTSE'
+            print ('No ticker provided, FTSE was used')
+        if start==None:
+            start = (dt.datetime.today()-dt.timedelta(weeks=10))
+            print ('Default start date: {}'.format((dt.datetime.today()-dt.timedelta(weeks=10)).strftime('%d-%m-%y')))
+        if end==None:
+            end = (dt.datetime.today())
+            print ('Default end date: {}'.format((dt.datetime.today()).strftime('%d-%m-%y')))
+        self.raw_data = yf.download(tickers, start=start, end=end)
+        print('The data spans {} working days, but has {} observations.'.format(np.busday_count(start.date(),end.date()),len(self.raw_data)))
+        clean_columns =[]
+        self.data = {}
+        for i in np.unique(self.raw_data.columns.get_level_values(0)):
+                    clean_columns.append(str(i).lower().replace(" ", "_"))
+        for i,x in zip(clean_columns,np.unique(self.raw_data.columns.get_level_values(0))):
+            self.data[i] = self.raw_data[x]
+        
 ```
 ## Models
 ### Binomial pricing model

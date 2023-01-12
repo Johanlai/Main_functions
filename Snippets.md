@@ -1,23 +1,36 @@
+
+
 # Contructing a portfolio
-`attempt 1`
-```python
+<details>
+  <summary>Tests</summary>
+
+  ##### 1:1 - pilot
+  ```python
+    #imports
 import yfinance as yf
 yf.pdr_override()
 import pandas_datareader as pdr
 from datetime import date
-```
-```python
+  ```
+  ```python
 class Portfolio:
     def __init__(self, tickers, start_date='2007-1-1', end_date=date.today()):
         self.raw = pdr.data.get_data_yahoo(tickers, start=start_date,end=end_date)
         self.close = self.raw['Adj Close']
         self.S = self.close[-1]
         self.stdev = self.close.std()*250**0.5
-```
-`attempt 2`<br>
+  ```
+    
+  ##### 2:1 - pilot
 In this version, defaults were added to generate a quick test case.<br> 
 >A dictionary was added to access each block of data at column index level 0, but this was unnecessary as the same subsets can be simply obtained by calling the column indexes. Cool tangent, checkpointing it.
-```python
+  ```python
+    #imports
+import yfinance as yf
+import numpy as np
+import datetime as dt
+  ```
+  ```python
 class Portfolio:
     def __init__(self, tickers=None, start=None, end=None):
         """
@@ -49,6 +62,70 @@ class Portfolio:
                     clean_columns.append(str(i).lower().replace(" ", "_"))
         for i,x in zip(clean_columns,np.unique(self.raw_data.columns.get_level_values(0))):
             self.data[i] = self.raw_data[x]     
+  ```
+</details>
+
+`Current version`
+```python
+    # Imports
+import yfinance as yf
+import numpy as np
+import pandas as pd
+import datetime as dt
+import matplotlib.pyplot as plt
+```
+```python
+tickers = ['PG', '^GSPC']
+class Portfolio:
+    def __init__(self, tickers=None, start=None, end=None):
+        """
+        Generate a portfolio from a list of tickers.
+        .rawdata: {'Adj Close','Close','High','Low','Open','Volume'}
+        -------------------
+        tickers = []
+        {start, end} = datetime
+        -------------------
+        Defaults:
+        Ticker: ^FTSE, Vodafone
+        Start: 52 weeks from current date
+        End: Current date
+        -------------------
+        Uses yahoo_finance
+        """
+# Setting default values to generate quick test instances
+    # Use FTSE index if no ticker is provided
+        if tickers==None:
+            tickers = ['^FTSE','VOD']
+            print ('No ticker provided, FTSE and vodafone was used')
+    # If no dates specified, use the range from 52 weeks ago till today
+        if start==None:
+            start = (dt.datetime.today()-dt.timedelta(weeks=52))
+            print ('Default start date: {}'.format((dt.datetime.today()-dt.timedelta(weeks=10)).strftime('%d-%m-%y')))
+        if end==None:
+            end = (dt.datetime.today())
+            print ('Default end date: {}'.format((dt.datetime.today()).strftime('%d-%m-%y')))
+# Retieve the data from YahooFinance        
+        self.raw_data = yf.download(tickers, start=start, end=end)
+        self.risk_free_rate = yf.download('^TNX')['Adj Close'].iloc[-1]
+# Quick indication of missing date
+        print('The data spans {} working days, but has {} observations.'.format(np.busday_count(start.date(),end.date()),len(self.raw_data)))
+        self.log_returns = np.log(self.raw_data['Adj Close'] / self.raw_data['Adj Close'].shift(1))
+    def Efficient_Frontier(self, n=1000):
+        portfolio_returns = []
+        portfolio_volatilities = []
+        for x in range (n):
+            weights = np.random.random(len(tickers))
+            weights /= np.sum(weights)
+            portfolio_returns.append(np.sum(weights * self.log_returns.mean())*250)
+            portfolio_volatilities.append(np.sqrt(np.dot(weights.T,np.dot(self.log_returns.cov() * 250, weights))))
+        self.portfolios = pd.DataFrame({'Return': portfolio_returns, 'Volatility':portfolio_volatilities})
+        plt.figure(figsize=(10,6))
+        plt.scatter(x=self.portfolios['Volatility'],y=self.portfolios['Return'])
+        plt.xlabel("Volatility")
+        plt.ylabel("Return")
+    def equally_weighted(self):
+        self.weights = np.ones(len(tickers))/len(tickers)
+        return self.weights
 ```
 #### Plotting the simulated efficient frontier
 `This is `

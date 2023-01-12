@@ -21,7 +21,7 @@ class Portfolio:
         self.stdev = self.close.std()*250**0.5
   ```
     
-  ##### 2:1 - pilot
+  ##### 2:1 - Class - default cases
 In this version, defaults were added to generate a quick test case.<br> 
 >A dictionary was added to access each block of data at column index level 0, but this was unnecessary as the same subsets can be simply obtained by calling the column indexes. Cool tangent, checkpointing it.
   ```python

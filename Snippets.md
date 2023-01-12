@@ -65,6 +65,30 @@ class Portfolio:
   ```
 </details>
 
+<details>
+  <summary>Break down</summary>
+  
+#### Plotting the simulated efficient frontier
+`This is `
+```python
+    def Efficient_Frontier(self, n=1000):
+        portfolio_returns = []
+        portfolio_volatilities = []
+        for x in range (n):
+            weights = np.random.random(len(tickers))
+            weights /= np.sum(weights)
+            portfolio_returns.append(np.sum(weights * self.log_returns.mean())*250)
+            portfolio_volatilities.append(np.sqrt(np.dot(weights.T,np.dot(self.log_returns.cov() * 250, weights))))
+        self.portfolios = pd.DataFrame({'Return': portfolio_returns, 'Volatility':portfolio_volatilities})
+        plt.figure(figsize=(10,6))
+        plt.scatter(x=self.portfolios['Volatility'],y=self.portfolios['Return'])
+        plt.xlabel("Volatility")
+        plt.ylabel("Return")
+```
+</details>
+<details>
+  <summary><b>Current version</b></summary>
+  
 `Current version`
 ```python
     # Imports
@@ -127,24 +151,7 @@ class Portfolio:
         self.weights = np.ones(len(tickers))/len(tickers)
         return self.weights
 ```
-#### Plotting the simulated efficient frontier
-`This is `
-```python
-    def Efficient_Frontier(self, n=1000):
-        portfolio_returns = []
-        portfolio_volatilities = []
-        for x in range (n):
-            weights = np.random.random(len(tickers))
-            weights /= np.sum(weights)
-            portfolio_returns.append(np.sum(weights * self.log_returns.mean())*250)
-            portfolio_volatilities.append(np.sqrt(np.dot(weights.T,np.dot(self.log_returns.cov() * 250, weights))))
-        self.portfolios = pd.DataFrame({'Return': portfolio_returns, 'Volatility':portfolio_volatilities})
-        plt.figure(figsize=(10,6))
-        plt.scatter(x=self.portfolios['Volatility'],y=self.portfolios['Return'])
-        plt.xlabel("Volatility")
-        plt.ylabel("Return")
-```
-
+</details>
 
 
 

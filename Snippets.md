@@ -126,7 +126,8 @@ class Portfolio:
         plt.ylabel("Return")
     def equally_weighted(self):
         self.weights = np.ones(len(tickers))/len(tickers)
-        return self.weights
+        self.portfolio_return = (np.sum(self.weights * self.log_returns.mean())*250)
+        self.portfolio_volatility = (np.sqrt(np.dot(self.weights.T,np.dot(self.log_returns.cov() * 250, self.weights))))
 ```
 </details>
 

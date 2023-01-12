@@ -48,9 +48,29 @@ class Portfolio:
         for i in np.unique(self.raw_data.columns.get_level_values(0)):
                     clean_columns.append(str(i).lower().replace(" ", "_"))
         for i,x in zip(clean_columns,np.unique(self.raw_data.columns.get_level_values(0))):
-            self.data[i] = self.raw_data[x]
-        
+            self.data[i] = self.raw_data[x]     
 ```
+#### Plotting the simulated efficient frontier
+`This is `
+```python
+    def Efficient_Frontier(self, n=1000):
+        portfolio_returns = []
+        portfolio_volatilities = []
+        for x in range (n):
+            weights = np.random.random(len(tickers))
+            weights /= np.sum(weights)
+            portfolio_returns.append(np.sum(weights * self.log_returns.mean())*250)
+            portfolio_volatilities.append(np.sqrt(np.dot(weights.T,np.dot(self.log_returns.cov() * 250, weights))))
+        self.portfolios = pd.DataFrame({'Return': portfolio_returns, 'Volatility':portfolio_volatilities})
+        plt.figure(figsize=(10,6))
+        plt.scatter(x=self.portfolios['Volatility'],y=self.portfolios['Return'])
+        plt.xlabel("Volatility")
+        plt.ylabel("Return")
+```
+
+
+
+
 ## Models
 ### Binomial pricing model
 Turn this into a class/function

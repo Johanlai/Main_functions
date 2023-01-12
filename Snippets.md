@@ -68,7 +68,7 @@ class Portfolio:
 <details>
   <summary>Break down</summary>
   
-#### Log returns
+#### [Log returns](https://github.com/Johanlai/Main_functions/blob/main/Explanations.md#log-returns)
 This is for calculating the log returns for **each** security.
 ```math
 ln(R_i)= r_i = ln\frac{P_t}{P_{t-1}}

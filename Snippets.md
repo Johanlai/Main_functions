@@ -1,5 +1,3 @@
-
-
 # Contructing a portfolio
 <details>
   <summary>Tests</summary>
@@ -66,36 +64,6 @@ class Portfolio:
 </details>
 
 <details>
-  <summary>Break down</summary>
-  
-#### [Log returns](https://github.com/Johanlai/Main_functions/blob/main/Explanations.md#log-returns)
-For calculating the log returns for **each** security.
-```math
-ln(R_i)= r_i = ln\frac{P_t}{P_{t-1}}
-```
-```python
-log_returns = np.log(df['Adj Close'] / df['Adj Close'].shift(1))
-```
-  
-#### Plotting the simulated efficient frontier
-`This is `
-```python
-def Efficient_Frontier(self, n=1000):
-    portfolio_returns = []
-    portfolio_volatilities = []
-    for x in range (n):
-        weights = np.random.random(len(tickers))
-        weights /= np.sum(weights)
-        portfolio_returns.append(np.sum(weights * self.log_returns.mean())*250)
-        portfolio_volatilities.append(np.sqrt(np.dot(weights.T,np.dot(self.log_returns.cov() * 250, weights))))
-    self.portfolios = pd.DataFrame({'Return': portfolio_returns, 'Volatility':portfolio_volatilities})
-    plt.figure(figsize=(10,6))
-    plt.scatter(x=self.portfolios['Volatility'],y=self.portfolios['Return'])
-    plt.xlabel("Volatility")
-    plt.ylabel("Return")
-```
-</details>
-<details>
   <summary><b>Current version</b></summary>
   
 `Current version`
@@ -161,6 +129,42 @@ class Portfolio:
         return self.weights
 ```
 </details>
+
+### Break down
+<details>
+  <summary>Break down: Log returns</summary>
+      
+  #### [Log returns](https://github.com/Johanlai/Main_functions/blob/main/Explanations.md#log-returns)
+For calculating the log returns for **each** security.
+```math
+ln(R_i)= r_i = ln\frac{P_t}{P_{t-1}}
+```
+```python
+log_returns = np.log(df['Adj Close'] / df['Adj Close'].shift(1))
+```
+  </details>
+    <details>
+  <summary>Break down: Efficient frontier</summary>
+  
+#### Plotting the simulated efficient frontier
+Generates (default = 1000) portfolios with random weights and plots their volatility vs. returns.
+```python
+def Efficient_Frontier(self, n=1000):
+    portfolio_returns = []
+    portfolio_volatilities = []
+    for x in range (n):
+        weights = np.random.random(len(tickers))
+        weights /= np.sum(weights)
+        portfolio_returns.append(np.sum(weights * self.log_returns.mean())*250)
+        portfolio_volatilities.append(np.sqrt(np.dot(weights.T,np.dot(self.log_returns.cov() * 250, weights))))
+    self.portfolios = pd.DataFrame({'Return': portfolio_returns, 'Volatility':portfolio_volatilities})
+    plt.figure(figsize=(10,6))
+    plt.scatter(x=self.portfolios['Volatility'],y=self.portfolios['Return'])
+    plt.xlabel("Volatility")
+    plt.ylabel("Return")
+```
+</details>
+
 
 
 

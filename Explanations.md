@@ -1,3 +1,12 @@
+#### Log returns
+Logging the returns aids to normalise the data for analysis
+```math
+ln(R_i)= r_i = ln\frac{P_t}{P_{t-1}}
+```
+- Log returns are (assumed to be) normally distributed
+- They are additive across time
+
+
 # Black–Scholes model
 ```math
 C(S,t) = N(d_1)S - N(d_2)Ke^{-r(T-t)}\newline

@@ -78,13 +78,14 @@ import matplotlib.pyplot as plt
 ```python
 tickers = ['PG', '^GSPC']
 class Portfolio:
-    def __init__(self, tickers=None, start=None, end=None):
+    def __init__(self, tickers=None, start=None, end=None, trading_days = 250):
         """
         Generate a portfolio from a list of tickers.
         .rawdata: {'Adj Close','Close','High','Low','Open','Volume'}
         -------------------
         tickers = []
         {start, end} = datetime
+        trading_days = number of trading days in the year
         -------------------
         Defaults:
         Ticker: ^FTSE, Vodafone
@@ -96,12 +97,13 @@ class Portfolio:
 # Setting default values to generate quick test instances
     # Use FTSE index if no ticker is provided
         if tickers==None:
-            tickers = ['^FTSE','VOD']
+            self.tickers = ['^FTSE','VOD']
             print ('No ticker provided, FTSE and vodafone was used')
+        else: self.tickers = tickers
     # If no dates specified, use the range from 52 weeks ago till today
         if start==None:
             start = (dt.datetime.today()-dt.timedelta(weeks=52))
-            print ('Default start date: {}'.format((dt.datetime.today()-dt.timedelta(weeks=10)).strftime('%d-%m-%y')))
+            print ('Default start date: {}'.format((dt.datetime.today()-dt.timedelta(weeks=52)).strftime('%d-%m-%y')))
         if end==None:
             end = (dt.datetime.today())
             print ('Default end date: {}'.format((dt.datetime.today()).strftime('%d-%m-%y')))
@@ -111,22 +113,27 @@ class Portfolio:
 # Quick indication of missing date
         print('The data spans {} working days, but has {} observations.'.format(np.busday_count(start.date(),end.date()),len(self.raw_data)))
         self.log_returns = np.log(self.raw_data['Adj Close'] / self.raw_data['Adj Close'].shift(1))
-    def Efficient_Frontier(self, n=1000):
+# Functions for creating portfolio returns and volatilities
+    def Port_ret(self, weights, log_returns, trading_days=250):
+        return (np.sum(weights * log_returns.mean())*trading_days)
+    def Port_vol(self, weights, log_returns, trading_days=250):
+        return (np.sqrt(np.dot(weights.T,np.dot(log_returns.cov() * trading_days, weights))))
+    def Efficient_Frontier(self, n=1000, s=100):
         portfolio_returns = []
         portfolio_volatilities = []
         for x in range (n):
-            weights = np.random.random(len(tickers))
+            weights = np.random.random(len(self.tickers))
             weights /= np.sum(weights)
             portfolio_returns.append(np.sum(weights * self.log_returns.mean())*250)
             portfolio_volatilities.append(np.sqrt(np.dot(weights.T,np.dot(self.log_returns.cov() * 250, weights))))
         self.portfolios = pd.DataFrame({'Return': portfolio_returns, 'Volatility':portfolio_volatilities})
-        plt.figure(figsize=(10,6))
-        plt.scatter(x=self.portfolios['Volatility'],y=self.portfolios['Return'])
+        plt.figure(figsize=(10,4))
+        plt.scatter(x=self.portfolios['Volatility'],y=self.portfolios['Return'],s=s)
         plt.xlabel("Volatility")
         plt.ylabel("Return")
     def equally_weighted(self):
-        self.weights = np.ones(len(tickers))/len(tickers)
-        self.portfolio_return = (np.sum(self.weights * self.log_returns.mean())*250)
+        self.weights = np.ones(len(self.tickers))/len(self.tickers)
+        self.portfolio_return = self.Port_ret(self.weights, self.log_returns)
         self.portfolio_volatility = (np.sqrt(np.dot(self.weights.T,np.dot(self.log_returns.cov() * 250, self.weights))))
 ```
 </details>

@@ -114,10 +114,6 @@ class Portfolio:
         print('The data spans {} working days, but has {} observations.'.format(np.busday_count(start.date(),end.date()),len(self.raw_data)))
         self.log_returns = np.log(self.raw_data['Adj Close'] / self.raw_data['Adj Close'].shift(1))
 # Functions for creating portfolio returns and volatilities
-    def Port_ret(self, weights, log_returns, trading_days=250):
-        return (np.sum(weights * log_returns.mean())*trading_days)
-    def Port_vol(self, weights, log_returns, trading_days=250):
-        return (np.sqrt(np.dot(weights.T,np.dot(log_returns.cov() * trading_days, weights))))
     def Efficient_Frontier(self, n=1000, s=100):
         portfolio_returns = []
         portfolio_volatilities = []
@@ -133,8 +129,17 @@ class Portfolio:
         plt.ylabel("Return")
     def equally_weighted(self):
         self.weights = np.ones(len(self.tickers))/len(self.tickers)
-        self.portfolio_return = self.Port_ret(self.weights, self.log_returns)
-        self.portfolio_volatility = (np.sqrt(np.dot(self.weights.T,np.dot(self.log_returns.cov() * 250, self.weights))))
+        self.portfolio_return = Port_ret_ann(self.weights, self.log_returns)
+        self.portfolio_volatility = Port_vol_ann(self.weights, self.log_returns)
+        
+def Port_ret(weights, log_returns, trading_days=None):
+    if trading_days != None:
+        return (np.sum(weights * log_returns.mean()) * trading_days)
+    else: return (np.sum(weights * log_returns.mean()))
+def Port_vol(weights, log_returns, trading_days=None):
+    if trading_days != None:
+        return (np.sqrt(np.dot(weights.T,np.dot(log_returns.cov() * trading_days, weights))))
+    else: return (np.sqrt(np.dot(weights.T,np.dot(log_returns.cov(), weights))))
 ```
 </details>
 

@@ -129,13 +129,13 @@ class Portfolio:
         plt.ylabel("Return")
     def equally_weighted(self):
         self.weights = np.ones(len(self.tickers))/len(self.tickers)
-        self.portfolio_return = Port_ret_ann(self.weights, self.log_returns)
-        self.portfolio_volatility = Port_vol_ann(self.weights, self.log_returns)
+        self.portfolio_return = Port_ret(self.weights, self.log_returns)
+        self.portfolio_volatility = Port_vol(self.weights, self.log_returns)
         
 def Port_ret(weights, log_returns, trading_days=None):
     if trading_days != None:
         return (np.sum(weights * log_returns.mean()) * trading_days)
-    else: return (np.sum(weights * log_returns.mean()))
+    else: return (np.sum(weights * log_returns,axis=1))
 def Port_vol(weights, log_returns, trading_days=None):
     if trading_days != None:
         return (np.sqrt(np.dot(weights.T,np.dot(log_returns.cov() * trading_days, weights))))
@@ -148,7 +148,14 @@ def Port_vol(weights, log_returns, trading_days=None):
   <summary>Break down: Log returns</summary>
       
   #### [Log returns](https://github.com/Johanlai/Main_functions/blob/main/Explanations.md#log-returns)
-For calculating the log returns for **each** security.
+For calculating the daily log returns for **each** security.
+```math
+ln(R_i)= r_i = ln\frac{P_t}{P_{t-1}}
+```
+```python
+log_returns = np.log(df['Adj Close'] / df['Adj Close'].shift(1))
+```
+`Annualised`
 ```math
 ln(R_i)= r_i = ln\frac{P_t}{P_{t-1}}
 ```

@@ -97,9 +97,9 @@ class Portfolio:
 # Setting default values to generate quick test instances
     # Use FTSE index if no ticker is provided
         if tickers==None:
-            self.tickers = ['^FTSE','VOD']
+            tickers = ['^FTSE','VOD']
             print ('No ticker provided, FTSE and vodafone was used')
-        else: self.tickers = tickers
+        else: tickers = tickers
     # If no dates specified, use the range from 52 weeks ago till today
         if start==None:
             start = (dt.datetime.today()-dt.timedelta(weeks=52))

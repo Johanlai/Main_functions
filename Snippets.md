@@ -279,7 +279,7 @@ weights = np.random.random(len(tickers))
 weights /= np.sum(weights)
 
 mc_sims = 1000
-T = 10000
+T = 1000
 
 meanM = np.full(shape=(T, len(weights)), fill_value=meanReturns)
 meanM = meanM.T

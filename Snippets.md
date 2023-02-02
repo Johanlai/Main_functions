@@ -97,8 +97,8 @@ class Portfolio:
 # Setting default values to generate quick test instances
     # Use FTSE index if no ticker is provided
         if tickers==None:
-            tickers = ['^FTSE','VOD']
-            print ('No ticker provided, FTSE and vodafone was used')
+            tickers = ['^FTSE','^GSPC']
+            print ('No ticker provided, FTSE and S&P 500 was used')
         else: tickers = tickers
     # If no dates specified, use the range from 52 weeks ago till today
         if start==None:
@@ -108,7 +108,7 @@ class Portfolio:
             end = (dt.datetime.today())
             print ('Default end date: {}'.format((dt.datetime.today()).strftime('%d-%m-%y')))
 # Retieve the data from YahooFinance        
-        self.raw_data = yf.download(tickers, start=start, end=end)
+        self.raw_data = yf.download(tickers, start=start, end=end).dropna()
         self.risk_free_rate = yf.download('^TNX')['Adj Close'].iloc[-1]
 # Quick indication of missing date
         print('The data spans {} working days, but has {} observations.'.format(np.busday_count(start.date(),end.date()),len(self.raw_data)))
@@ -128,7 +128,14 @@ class Portfolio:
         plt.xlabel("Volatility")
         plt.ylabel("Return")
     def equally_weighted(self):
-        self.weights = np.ones(len(self.tickers))/len(self.tickers)
+        self.weights = np.ones(len(tickers))/len(tickers)
+        self.portfolio_prices = Port_ret(self.weights, self.raw_data['Adj Close'])
+        self.portfolio_return = Port_ret(self.weights, self.log_returns)
+        self.portfolio_volatility = Port_vol(self.weights, self.log_returns)
+    def randomly_weighted(self):
+        self.weights = np.random.random(len(tickers))
+        self.weights /= np.sum(self.weights)
+        self.portfolio_prices = Port_ret(self.weights, self.raw_data['Adj Close'])
         self.portfolio_return = Port_ret(self.weights, self.log_returns)
         self.portfolio_volatility = Port_vol(self.weights, self.log_returns)
         

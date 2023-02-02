@@ -259,3 +259,39 @@ class BSM:
     def call_price(self):
         return (self.S*norm.cdf(self.d1())) - (self.k * np.exp(-self.r * self.T) * norm.cdf(self.d2()))
 ```
+### Monte Carlo simulations
+```python
+def get_data(tickers, start, end):
+    data = yf.download(tickers, start, end).dropna()
+    close = data['Adj Close']
+    returns = close.pct_change()
+    meanReturns = returns.mean()
+    covMatrix = returns.cov()
+    return meanReturns, covMatrix
+    
+tickers = ['^FTSE','^GSPC']
+start = (dt.datetime(2010,1,1))
+end = (dt.datetime.today())
+
+meanReturns, covMatrix = get_data(tickers, start, end)
+
+weights = np.random.random(len(tickers))
+weights /= np.sum(weights)
+
+mc_sims = 1000
+T = 10000
+
+meanM = np.full(shape=(T, len(weights)), fill_value=meanReturns)
+meanM = meanM.T
+
+portfolio_sims = np.full(shape=(T,mc_sims),fill_value=0.0)
+initialPortfolio = 1000
+
+for m in range(0, mc_sims):
+    Z = np.random.normal(size=(T, len(weights)))
+    L = np.linalg.cholesky(covMatrix)
+    dailyReturns = meanM + np.inner(L, Z)
+    portfolio_sims[:,m] = np.cumprod(np.inner(weights, dailyReturns.T)+1)*initialPortfolio
+plt.plot(portfolio_sims)
+plt.show()
+```

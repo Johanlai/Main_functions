@@ -23,3 +23,5 @@ s = sample standard deviation<br>
 N = standard normal distribution<br>
 e = exponential term<br>
 C = call premium
+
+In the merton model, the probability of default is simply the probability function of the normal minus the distance to default. $PD = \mathcal{N}(-d_2)$

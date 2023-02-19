@@ -261,6 +261,12 @@ class BSM:
 ```
 ### Monte Carlo simulations
 ```python
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+```
+```python
 def MC_sim(data, T=500, sims_count = 100, initial=None, returns_data=False, show_plot=True):
     if isinstance(data, pd.Series)==True:
         if returns_data==False:
